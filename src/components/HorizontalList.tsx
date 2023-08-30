@@ -6,15 +6,23 @@ export default function HorizontalList(props: { matchList: MatchList[] }) {
     <div className="flex flex-col pt-5">
       <div className="flex overflow-x-scroll pb-5 hide-scroll-bar">
         <div className="flex flex-nowrap  ">
-          {props.matchList.map((match) => (
-            <LiveCard
-              key={match.id}
-              id={match.id}
-              location={match.location}
-              name={match.name}
-              sportName={match.sportName}
-            />
-          ))}
+          {props.matchList
+            .sort(
+              (a, b) =>
+                Date.parse(b.endsAt.toString()) -
+                Date.parse(a.endsAt.toString())
+            )
+            .map((match) => (
+              <LiveCard
+                key={match.id}
+                id={match.id}
+                location={match.location}
+                name={match.name}
+                sportName={match.sportName}
+                teams={match.teams}
+                isRunning={match.isRunning}
+              />
+            ))}
         </div>
       </div>
     </div>

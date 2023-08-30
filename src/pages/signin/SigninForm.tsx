@@ -1,7 +1,7 @@
 import { VITE_API_ENDPOINT } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {formFields} from "../../types"
+import { formFields } from "../../types";
 
 const SigninForm: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const SigninForm: React.FC = () => {
       }
 
       console.log("Sign-in successful");
-      console.log(data.auth_token)
+      console.log(data.auth_token);
       localStorage.setItem("authToken", data.auth_token);
       localStorage.setItem("userData", JSON.stringify(data.user));
       navigate("/");
@@ -59,6 +59,15 @@ const SigninForm: React.FC = () => {
           className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
         />
       </div>
+      <p className="text-black pt-2">
+        New user? Click here to{" "}
+        <span
+          className="text-blue-500 font-bold hover:cursor-pointer"
+          onClick={() => navigate("/signup")}
+        >
+          signup
+        </span>
+      </p>
       <button
         type="submit"
         className="w-full bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-gray mt-4"

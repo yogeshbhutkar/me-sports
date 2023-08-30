@@ -4,11 +4,16 @@ import Dashboard from "../pages/dashboard";
 import ProtectedRoutes from "./ProtectedRoute";
 import Modal from "../components/Modal";
 import Logout from "../pages/logout";
+import Signup from "../pages/signup";
 
 const router = createBrowserRouter([
   {
     path: "/signin",
     element: <SignIn />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
   {
     path: "/",
