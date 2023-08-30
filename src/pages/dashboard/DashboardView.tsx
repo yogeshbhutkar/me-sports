@@ -16,6 +16,7 @@ export default function DashboardView() {
   const [sports, setSports] = useState<string[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [matches, setMatches] = useState<matches>();
+  const [refresh, setRefresh] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,11 +37,13 @@ export default function DashboardView() {
       fetchMatchList().then((res) => {
         setMatches(res);
         setLoading(false);
+        setRefresh(false);
+        console.log(matches);
       });
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     //Storing different sports...
@@ -57,6 +60,25 @@ export default function DashboardView() {
 
   return (
     <div className="py-5 px-[8%]">
+      <div>
+        <h2 className="font-bold text-2xl pt-5 pb-3 pr-2 inline">Live Games</h2>
+        <button onClick={() => setRefresh(true)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 inline pb-1"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+            />
+          </svg>
+        </button>
+      </div>
       {matches && <LiveGames matchList={matches.matches} />}
       <h2 className="font-bold text-2xl pt-5 pb-3">Articles</h2>
       <Tab.Group>

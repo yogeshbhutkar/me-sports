@@ -16,7 +16,6 @@ export type MatchList = {
 export default function LiveGames(props: { matchList: MatchList[] }) {
   return (
     <div>
-      <h2 className="font-bold text-2xl pt-5 pb-3">Live Games</h2>
       <HorizontalList matchList={props.matchList} />
     </div>
   );

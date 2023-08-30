@@ -64,3 +64,7 @@ export const fetchSingleArticle = (id:string) => {
 export const fetchMatchList = () => {
   return request(`/matches`, "GET", {})
 }
+
+export const fetchSingleMatch = (id: string) => {
+  return request(`/matches/${id}`, "GET", {})
+}

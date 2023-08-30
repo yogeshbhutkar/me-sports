@@ -8,6 +8,8 @@ export default function HorizontalList(props: { matchList: MatchList[] }) {
         <div className="flex flex-nowrap  ">
           {props.matchList.map((match) => (
             <LiveCard
+              key={match.id}
+              id={match.id}
               location={match.location}
               name={match.name}
               sportName={match.sportName}
