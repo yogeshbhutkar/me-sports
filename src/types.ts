@@ -33,3 +33,17 @@ export type singleArticle = {
   thumbnail: string;
   title: string
 }
+
+export type singleMatch = {
+    endsAt: Date;
+    id: number;
+    isRunning: boolean;
+    location: string;
+    name: string;
+    playingTeam: number;
+    score: any;
+    sportName: string;
+    startsAt: Date;
+    story: string;
+    teams: team;
+}
