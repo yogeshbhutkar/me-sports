@@ -1,27 +1,28 @@
 import { Link } from "react-router-dom";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-
-const userNavigation = [
-  { name: "Profile", href: "/profile" },
-
-  {
-    name: "Update Password",
-    href:
-      localStorage.getItem("loggedIn") === "true"
-        ? "/article/update-password"
-        : "/signin",
-  },
-  {
-    name: localStorage.getItem("loggedIn") === "true" ? "Sign out" : "Sign In",
-    href: localStorage.getItem("loggedIn") === "true" ? "/logout" : "/signin",
-  },
-];
-
+import { useAtomValue } from "jotai";
+import { loginAtom } from "../userAtom";
 const classNames = (...classes: string[]): string =>
   classes.filter(Boolean).join(" ");
 
 export default function Navbar() {
+  const loginInfo = useAtomValue(loginAtom);
+
+  const userNavigation = [
+    { name: "Profile", href: "/profile" },
+
+    {
+      name: "Update Password",
+      href:
+        loginInfo.loggedIn === true ? "/article/update-password" : "/signin",
+    },
+    {
+      name: loginInfo.loggedIn === true ? "Sign out" : "Sign In",
+      href: loginInfo.loggedIn === true ? "/logout" : "/signin",
+    },
+  ];
+
   return (
     <nav className="sticky top-0 z-10 navbar-color border-b-gray-700 border-b-[1px] backdrop-filter backdrop-blur-lg bg-opacity-30 ">
       <div className="max-w-5xl mx-auto px-4">

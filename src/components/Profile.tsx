@@ -178,7 +178,7 @@ export default function Profile() {
                           Let's personalize your dashboard.
                         </h1>
                         <h4 className="text-white font-bold text-xl mt-8 mb-1">
-                          Pick a sport <span className="text-2xl">🏀</span>
+                          Pick your sports <span className="text-2xl">🏀</span>
                         </h4>
                         <div className="pt-3 mt-3 bg-[#0D1117] p-5 rounded-xl border-gray-800 border border-1">
                           {sports &&
@@ -216,7 +216,7 @@ export default function Profile() {
                             ))}
                         </div>
                         <h4 className="text-white font-bold text-xl mt-8 mb-1">
-                          Pick a team <span className="text-3xl">🤼</span>
+                          Pick your teams <span className="text-3xl">🤼</span>
                         </h4>
                         <div className="pt-3 mt-3 bg-[#0D1117] p-5 rounded-xl border-gray-800 border border-1">
                           {teams &&

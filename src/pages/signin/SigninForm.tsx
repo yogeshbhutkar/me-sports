@@ -4,9 +4,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { formFields } from "../../types";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSetAtom } from "jotai";
+import { loginAtom } from "../../userAtom";
 
 const SigninForm: React.FC = () => {
   const navigate = useNavigate();
+
+  const setUserAtom = useSetAtom(loginAtom);
 
   const {
     register,
@@ -46,6 +50,9 @@ const SigninForm: React.FC = () => {
       localStorage.setItem("authToken", data.auth_token);
       localStorage.setItem("userData", JSON.stringify(data.user));
       localStorage.setItem("loggedIn", "true");
+      setUserAtom({
+        loggedIn: true,
+      });
       navigate("/article");
     } catch (error) {
       console.error("Sign-in failed:", error);

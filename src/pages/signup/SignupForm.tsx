@@ -2,6 +2,8 @@ import React from "react";
 import { VITE_API_ENDPOINT } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useSetAtom } from "jotai";
+import { loginAtom } from "../../userAtom";
 
 type formFields = {
   name: string;
@@ -12,6 +14,8 @@ type formFields = {
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
+
+  const setUserAtom = useSetAtom(loginAtom);
 
   const {
     register,
@@ -41,6 +45,9 @@ const SignupForm: React.FC = () => {
       localStorage.setItem("authToken", res.auth_token);
       localStorage.setItem("userData", JSON.stringify(res.user));
       localStorage.setItem("loggedIn", "true");
+      setUserAtom({
+        loggedIn: true,
+      });
       navigate("/article");
     } catch (error) {
       console.error("Sign-up failed:", error);
