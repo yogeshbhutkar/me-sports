@@ -6,7 +6,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default ({ mode }) => {
   return defineConfig({
     build: {
-      outDir: "build",
+      outDir: "dist",
     },
     plugins: [react(), VitePWA({
       devOptions: {

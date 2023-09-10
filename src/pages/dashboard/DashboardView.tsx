@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
   fetchArticles,
   fetchMatchList,
@@ -9,7 +9,10 @@ import { Fragment } from "react";
 import { Tab } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import LiveGames, { MatchList } from "../../components/LiveGames";
+import { MatchList } from "../../components/LiveGames";
+import ErrorBoundary from "../../components/ErrorBoundary";
+
+const LiveGames = React.lazy(() => import("../../components/LiveGames"));
 
 type matches = {
   matches: MatchList[];
@@ -87,7 +90,7 @@ export default function DashboardView() {
   useEffect(() => {
     try {
       console.log("Fetching user preferences.");
-      if (localStorage.getItem("authToken")) {
+      if (localStorage.getItem("userData")) {
         fetchPreferences().then((res) => {
           setPreferences(res.preferences);
           setLoading(false);
@@ -235,7 +238,15 @@ export default function DashboardView() {
           </svg>
         </button>
       </div>
-      {matches && <LiveGames matchList={matches.matches} />}
+      {matches && (
+        <ErrorBoundary>
+          <Suspense
+            fallback={<div className="suspense-loading">Loading...</div>}
+          >
+            <LiveGames matchList={matches.matches} />
+          </Suspense>
+        </ErrorBoundary>
+      )}
       <h2 className="font-bold text-2xl pt-5 pb-3">
         Trending News <span className="text-2xl">🪄</span>
       </h2>
@@ -273,7 +284,17 @@ export default function DashboardView() {
         <Tab.Panels className="bg-black py-2 px-5 border border-1 border-gray-800 rounded-2xl mt-2">
           <Tab.Panel key={-1}>
             <div>
-              {preferredMatches && <LiveGames matchList={preferredMatches} />}
+              {preferredMatches && (
+                <ErrorBoundary>
+                  <Suspense
+                    fallback={
+                      <div className="suspense-loading">Loading...</div>
+                    }
+                  >
+                    <LiveGames matchList={preferredMatches} />
+                  </Suspense>
+                </ErrorBoundary>
+              )}
               {fetchPreferredArticle()}
             </div>
           </Tab.Panel>
