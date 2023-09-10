@@ -2,6 +2,8 @@ import { VITE_API_ENDPOINT } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { formFields } from "../../types";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SigninForm: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +24,19 @@ const SigninForm: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
+
+      if (response.status === 401) {
+        toast.error("Invalid email or password.", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
 
       if (!response.ok) {
         throw new Error("Sign-in failed");
@@ -74,6 +89,7 @@ const SigninForm: React.FC = () => {
       >
         Sign In
       </button>
+      <ToastContainer />
     </form>
   );
 };

@@ -22,8 +22,36 @@ export default function DashboardView() {
   const [matches, setMatches] = useState<matches>();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [animate, setAnimate] = useState(false);
+  const [preferredMatches, setPreferredMatches] = useState<MatchList[]>();
   const [preferences, setPreferences] = useState<preferences>();
   const navigate = useNavigate();
+
+  const compareMatchPreferences = (match: MatchList) => {
+    if (preferences) {
+      for (let i = 0; i < preferences?.team.length; i++) {
+        if (
+          preferences.team[i] === match.teams[0].name ||
+          preferences.team[i] === match.teams[1].name
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  };
+
+  const performSimilarityCheck = () => {
+    let temp = [];
+    if (matches) {
+      for (let i = 0; i < matches.matches.length; i++) {
+        if (compareMatchPreferences(matches.matches[i])) {
+          temp.push(matches.matches[i]);
+        }
+      }
+    }
+    setPreferredMatches(temp);
+  };
 
   useEffect(() => {
     try {
@@ -36,6 +64,11 @@ export default function DashboardView() {
       console.log(err);
     }
   }, []);
+
+  useEffect(() => {
+    console.log("Getting user preferred matches.");
+    performSimilarityCheck();
+  }, [matches, preferences]);
 
   useEffect(() => {
     try {
@@ -54,10 +87,12 @@ export default function DashboardView() {
   useEffect(() => {
     try {
       console.log("Fetching user preferences.");
-      fetchPreferences().then((res) => {
-        setPreferences(res.preferences);
-        setLoading(false);
-      });
+      if (localStorage.getItem("authToken")) {
+        fetchPreferences().then((res) => {
+          setPreferences(res.preferences);
+          setLoading(false);
+        });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -97,6 +132,19 @@ export default function DashboardView() {
   };
 
   const fetchPreferredArticle = () => {
+    if (!localStorage.getItem("authToken")) {
+      return (
+        <p className="font-semibold pb-10 items-center w-full text-center">
+          <span
+            onClick={() => navigate("/signin")}
+            className="hover:underline hover:underline-offset-4 cursor-pointer"
+          >
+            Log In
+          </span>{" "}
+          to access this feature. <span className="text-2xl">🔒</span>
+        </p>
+      );
+    }
     if (preferences && preferences.sport.length === 0) {
       /* Displaying all articles in case preferences for sport are found missing. */
       return articles?.map((item) => {
@@ -161,7 +209,9 @@ export default function DashboardView() {
   return (
     <div className="py-5 px-[8%]">
       <div>
-        <h2 className="font-bold text-2xl pt-5 pb-3 pr-2 inline">Live Games</h2>
+        <h2 className="font-bold text-2xl pt-5 pb-3 pr-2 inline">
+          Live Scores
+        </h2>
         <button
           onClick={() => {
             setRefresh(true);
@@ -186,7 +236,9 @@ export default function DashboardView() {
         </button>
       </div>
       {matches && <LiveGames matchList={matches.matches} />}
-      <h2 className="font-bold text-2xl pt-5 pb-3">Articles</h2>
+      <h2 className="font-bold text-2xl pt-5 pb-3">
+        Trending News <span className="text-2xl">🪄</span>
+      </h2>
       <Tab.Group>
         <Tab.List>
           <Tab key={-1} className="outline-none">
@@ -218,8 +270,13 @@ export default function DashboardView() {
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels>
-          <Tab.Panel key={-1}>{fetchPreferredArticle()}</Tab.Panel>
+        <Tab.Panels className="bg-black py-2 px-5 border border-1 border-gray-800 rounded-2xl mt-2">
+          <Tab.Panel key={-1}>
+            <div>
+              {preferredMatches && <LiveGames matchList={preferredMatches} />}
+              {fetchPreferredArticle()}
+            </div>
+          </Tab.Panel>
           {loading ? (
             <div className="w-full my-36 flex items-center justify-center">
               <ClipLoader

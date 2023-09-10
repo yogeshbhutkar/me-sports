@@ -12,6 +12,7 @@ import Modal from "../components/Modal";
 import Logout from "../pages/logout";
 import Signup from "../pages/signup";
 import Profile from "../components/Profile";
+import UpdatePassword from "../components/UpdatePassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements([
@@ -29,15 +30,6 @@ const router = createBrowserRouter(
     >
       <Route
         index={true}
-        path="profile"
-        element={
-          <ProtectedRoutes>
-            <Profile />
-          </ProtectedRoutes>
-        }
-      />
-      <Route
-        index={true}
         path=":id"
         element={
           <>
@@ -46,7 +38,25 @@ const router = createBrowserRouter(
         }
       />
       ,
+      <Route
+        index={true}
+        path="update-password"
+        element={
+          <>
+            <UpdatePassword />
+          </>
+        }
+      />
+      ,
     </Route>,
+    <Route
+      path="/profile"
+      element={
+        <ProtectedRoutes>
+          <Profile />
+        </ProtectedRoutes>
+      }
+    />,
     <Route path="/logout" element={<Logout />} />,
   ])
 );

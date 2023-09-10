@@ -3,8 +3,21 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
 const userNavigation = [
-  { name: "Profile", href: "/article/profile" },
-  { name: "Sign out", href: "/logout" },
+  { name: "Profile", href: "/profile" },
+
+  {
+    name: "Update Password",
+    href:
+      localStorage.getItem("authToken")?.length !== 0
+        ? "/article/update-password"
+        : "/signin",
+  },
+  {
+    name:
+      localStorage.getItem("authToken")?.length !== 0 ? "Sign out" : "Sign In",
+    href:
+      localStorage.getItem("authToken")?.length !== 0 ? "/logout" : "/signin",
+  },
 ];
 
 const classNames = (...classes: string[]): string =>
@@ -48,7 +61,7 @@ export default function Navbar() {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-[#333741] py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-black border border-1 border-gray-700 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     {userNavigation.map((item) => (
                       <Menu.Item key={item.name}>
                         {({ active }) => (

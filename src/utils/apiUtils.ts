@@ -45,7 +45,7 @@ export const request = async (
     return json;
   } else {
     const errorJson = await response.json();
-    throw Error(errorJson);
+    return errorJson;
   }
 };
 
@@ -79,6 +79,13 @@ export const fetchTeams = () => {
 
 export const fetchPreferences = () => {
   return request(`/user/preferences`, "GET", {})
+}
+
+export const updatePassword = (current_password: string, new_password: string) => {
+  return request(`/user/password`, "PATCH", {
+    current_password: current_password,
+    new_password: new_password
+  })
 }
 
 export const patchPreferences = (team: string[], sport: string[]) => {

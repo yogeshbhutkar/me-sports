@@ -12,6 +12,7 @@ export default function HorizontalList(props: { matchList: MatchList[] }) {
                 Date.parse(b.endsAt.toString()) -
                 Date.parse(a.endsAt.toString())
             )
+            .slice(0, 5)
             .map((match) => (
               <LiveCard
                 key={match.id}
