@@ -30,7 +30,7 @@ export default function DashboardView() {
   const navigate = useNavigate();
 
   const compareMatchPreferences = (match: MatchList) => {
-    if (preferences) {
+    if (preferences !== undefined && preferences.team !== undefined) {
       for (let i = 0; i < preferences?.team.length; i++) {
         if (
           preferences.team[i] === match.teams[0].name ||
@@ -90,7 +90,7 @@ export default function DashboardView() {
   useEffect(() => {
     try {
       console.log("Fetching user preferences.");
-      if (localStorage.getItem("userData")) {
+      if (localStorage.getItem("loggedIn") === "true") {
         fetchPreferences().then((res) => {
           setPreferences(res.preferences);
           setLoading(false);
@@ -123,7 +123,7 @@ export default function DashboardView() {
   };
 
   const checkSportInArticle = (sport: string) => {
-    if (preferences) {
+    if (preferences && preferences.sport) {
       for (let i = 0; i < preferences?.sport.length; i++) {
         if (preferences.sport[i] === sport) {
           return true;
@@ -135,7 +135,7 @@ export default function DashboardView() {
   };
 
   const fetchPreferredArticle = () => {
-    if (!localStorage.getItem("authToken")) {
+    if (localStorage.getItem("loggedIn") === "false") {
       return (
         <p className="font-semibold pb-10 items-center w-full text-center">
           <span
@@ -148,7 +148,12 @@ export default function DashboardView() {
         </p>
       );
     }
-    if (preferences && preferences.sport.length === 0) {
+    if (
+      preferences !== undefined &&
+      preferences.sport !== undefined &&
+      preferences.sport.length === 0
+    ) {
+      console.log("no preferences");
       /* Displaying all articles in case preferences for sport are found missing. */
       return articles?.map((item) => {
         return (
@@ -174,7 +179,8 @@ export default function DashboardView() {
           </div>
         );
       });
-    } else if (articles) {
+    }
+    if (articles) {
       console.log("Fetching relevant articles.");
       let relevantArticles = [];
       for (let i = 0; i < articles?.length; i++) {

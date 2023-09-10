@@ -5,6 +5,7 @@ const Logout = () => {
   useEffect(() => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userData");
+    localStorage.setItem("loggedIn", "false");
   }, []);
 
   return <Navigate to="/signin" />;

@@ -8,15 +8,13 @@ const userNavigation = [
   {
     name: "Update Password",
     href:
-      localStorage.getItem("authToken")?.length !== 0
+      localStorage.getItem("loggedIn") === "true"
         ? "/article/update-password"
         : "/signin",
   },
   {
-    name:
-      localStorage.getItem("authToken")?.length !== 0 ? "Sign out" : "Sign In",
-    href:
-      localStorage.getItem("authToken")?.length !== 0 ? "/logout" : "/signin",
+    name: localStorage.getItem("loggedIn") === "true" ? "Sign out" : "Sign In",
+    href: localStorage.getItem("loggedIn") === "true" ? "/logout" : "/signin",
   },
 ];
 

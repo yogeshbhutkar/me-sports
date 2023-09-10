@@ -48,18 +48,22 @@ export default function Profile() {
   }, []);
 
   const checkSportsList = (sport: string) => {
-    for (let i = 0; i < sportPreferences.length; i++) {
-      if (sportPreferences[i] === sport) {
-        return true;
+    if (sportPreferences) {
+      for (let i = 0; i < sportPreferences.length; i++) {
+        if (sportPreferences[i] === sport) {
+          return true;
+        }
       }
     }
     return false;
   };
 
   const checkTeamsList = (team: string) => {
-    for (let i = 0; i < teamsPreferences.length; i++) {
-      if (teamsPreferences[i] === team) {
-        return true;
+    if (teamsPreferences) {
+      for (let i = 0; i < teamsPreferences.length; i++) {
+        if (teamsPreferences[i] === team) {
+          return true;
+        }
       }
     }
     return false;
@@ -195,7 +199,10 @@ export default function Profile() {
                                         );
                                       setSportPreferences(filteredSports);
                                     } else {
-                                      setSportPreferences((prev: string[]) => [
+                                      if (sportPreferences === undefined) {
+                                        setSportPreferences([]);
+                                      }
+                                      setSportPreferences((prev) => [
                                         ...prev,
                                         sport.name,
                                       ]);
@@ -235,7 +242,10 @@ export default function Profile() {
                                         );
                                       setTeamPreferences(filteredSports);
                                     } else {
-                                      setTeamPreferences((prev: string[]) => [
+                                      if (teamsPreferences === undefined) {
+                                        setTeamPreferences([]);
+                                      }
+                                      setTeamPreferences((prev) => [
                                         ...prev,
                                         team.name,
                                       ]);
