@@ -1,6 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
-import { Provider, useAtom, useSetAtom } from "jotai";
+import { Provider, useSetAtom } from "jotai";
 import { loginAtom } from "./userAtom";
 
 const App = () => {
