@@ -3,7 +3,7 @@ export type formFields = {
     password: string;
   };
 
-type sport = {
+export type sport = {
   id: number;
   name: string;
 }

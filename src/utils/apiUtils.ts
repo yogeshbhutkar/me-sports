@@ -68,3 +68,16 @@ export const fetchMatchList = () => {
 export const fetchSingleMatch = (id: string) => {
   return request(`/matches/${id}`, "GET", {})
 }
+
+export const fetchSports = () => {
+  return request(`/sports`, "GET", {})
+}
+
+export const patchPreferences = (team: string[], sport: string[]) => {
+  return request(`/user/preferences`, "PATCH", {
+    "preferences": {
+      "team": team,
+      "sport": sport
+    }
+  })
+}

@@ -3,7 +3,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
 const userNavigation = [
-  { name: "Profile", href: "#" },
+  { name: "Profile", href: "/article/profile" },
   { name: "Sign out", href: "/logout" },
 ];
 
@@ -52,15 +52,15 @@ export default function Navbar() {
                     {userNavigation.map((item) => (
                       <Menu.Item key={item.name}>
                         {({ active }) => (
-                          <a
-                            href={item.href}
+                          <Link
+                            to={item.href}
                             className={classNames(
                               active ? "bg-[#333741]" : "",
                               "block px-4 py-2 text-sm text-gray-300"
                             )}
                           >
                             {item.name}
-                          </a>
+                          </Link>
                         )}
                       </Menu.Item>
                     ))}
