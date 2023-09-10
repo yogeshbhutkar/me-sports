@@ -73,6 +73,14 @@ export const fetchSports = () => {
   return request(`/sports`, "GET", {})
 }
 
+export const fetchTeams = () => {
+  return request(`/teams`, "GET", {})
+}
+
+export const fetchPreferences = () => {
+  return request(`/user/preferences`, "GET", {})
+}
+
 export const patchPreferences = (team: string[], sport: string[]) => {
   return request(`/user/preferences`, "PATCH", {
     "preferences": {

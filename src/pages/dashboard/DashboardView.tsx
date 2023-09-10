@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { fetchArticles, fetchMatchList } from "../../utils/apiUtils";
-import { article } from "../../types";
+import {
+  fetchArticles,
+  fetchMatchList,
+  fetchPreferences,
+} from "../../utils/apiUtils";
+import { article, preferences } from "../../types";
 import { Fragment } from "react";
 import { Tab } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
@@ -13,10 +17,12 @@ type matches = {
 
 export default function DashboardView() {
   const [articles, setArticles] = useState<article[]>();
-  const [sports, setSports] = useState<string[]>();
+  const [sports, setSports] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [matches, setMatches] = useState<matches>();
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [animate, setAnimate] = useState(false);
+  const [preferences, setPreferences] = useState<preferences>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +52,18 @@ export default function DashboardView() {
   }, [refresh]);
 
   useEffect(() => {
+    try {
+      console.log("Fetching user preferences.");
+      fetchPreferences().then((res) => {
+        setPreferences(res.preferences);
+        setLoading(false);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
     //Storing different sports...
     articles?.map((item) =>
       setSports((prev) => [...(prev ?? []), item.sport.name])
@@ -58,11 +76,99 @@ export default function DashboardView() {
     setSports((prev) => prev?.sort());
   }, [articles]);
 
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+  const handleAnimation = async () => {
+    setAnimate(true);
+    await delay(1000);
+    setAnimate(false);
+  };
+
+  const checkSportInArticle = (sport: string) => {
+    if (preferences) {
+      for (let i = 0; i < preferences?.sport.length; i++) {
+        if (preferences.sport[i] === sport) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return false;
+  };
+
+  const fetchPreferredArticle = () => {
+    if (preferences && preferences.sport.length === 0) {
+      /* Displaying all articles in case preferences for sport are found missing. */
+      return articles?.map((item) => {
+        return (
+          <div key={item.id} className="hover:cursor-pointer">
+            <div
+              onClick={() => navigate(`/article/${item.id}`)}
+              className="w-full"
+            >
+              <div className="max-w-full rounded-2xl flex mx-2 my-4 overflow-hidden bg-black text-white shadow-lg  border border-gray-700">
+                <div className="">
+                  <img
+                    className="h-52 w-64 object-cover items-center"
+                    src={item.thumbnail}
+                    alt="Thumbnail"
+                  />
+                </div>
+                <div className="px-6 py-4 inline">
+                  <div className="font-bold text-xl mb-2">{item.title}</div>
+                  <p className="text-gray-400 text-base">{item.summary}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      });
+    } else if (articles) {
+      console.log("Fetching relevant articles.");
+      let relevantArticles = [];
+      for (let i = 0; i < articles?.length; i++) {
+        if (checkSportInArticle(articles[i].sport.name)) {
+          relevantArticles.push(articles[i]);
+        }
+      }
+      return relevantArticles.map((item) => {
+        return (
+          <div key={item.id} className="hover:cursor-pointer">
+            <div
+              onClick={() => navigate(`/article/${item.id}`)}
+              className="w-full"
+            >
+              <div className="max-w-full rounded-2xl flex mx-2 my-4 overflow-hidden bg-black text-white shadow-lg  border border-gray-700">
+                <div className="">
+                  <img
+                    className="h-52 w-64 object-cover items-center"
+                    src={item.thumbnail}
+                    alt="Thumbnail"
+                  />
+                </div>
+                <div className="px-6 py-4 inline">
+                  <div className="font-bold text-xl mb-2">{item.title}</div>
+                  <p className="text-gray-400 text-base">{item.summary}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      });
+    }
+  };
+
   return (
     <div className="py-5 px-[8%]">
       <div>
         <h2 className="font-bold text-2xl pt-5 pb-3 pr-2 inline">Live Games</h2>
-        <button onClick={() => setRefresh(true)}>
+        <button
+          onClick={() => {
+            setRefresh(true);
+            handleAnimation();
+          }}
+          className={animate ? "animate-spin" : "animate-none"}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -83,14 +189,27 @@ export default function DashboardView() {
       <h2 className="font-bold text-2xl pt-5 pb-3">Articles</h2>
       <Tab.Group>
         <Tab.List>
+          <Tab key={-1} className="outline-none">
+            {({ selected }) => (
+              <p
+                className={
+                  selected
+                    ? "px-4 py-2 rounded-xl mx-2 my-2 bg-black outline-none border border-1 border-gray-700"
+                    : " px-4 py-2 rounded-xl mx-2 my-2 outline-none"
+                }
+              >
+                For You
+              </p>
+            )}
+          </Tab>
           {sports?.map((sport, index) => (
             <Tab as={Fragment} key={index}>
               {({ selected }) => (
                 <button
                   className={
                     selected
-                      ? "bg-white text-black px-4 py-2 rounded-xl mx-2 my-2 border border-white"
-                      : "bg-black px-4 py-2 rounded-xl mx-2 my-2 border border-gray-700"
+                      ? "px-4 py-2 rounded-xl mx-2 my-2 bg-black outline-none border border-1 border-gray-700"
+                      : " px-4 py-2 rounded-xl mx-2 my-2 outline-none"
                   }
                 >
                   {sport}
@@ -100,6 +219,7 @@ export default function DashboardView() {
           ))}
         </Tab.List>
         <Tab.Panels>
+          <Tab.Panel key={-1}>{fetchPreferredArticle()}</Tab.Panel>
           {loading ? (
             <div className="w-full my-36 flex items-center justify-center">
               <ClipLoader

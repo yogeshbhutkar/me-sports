@@ -8,9 +8,20 @@ export type sport = {
   name: string;
 }
 
+export type teams = {
+  id: number;
+  name: string;
+  plays: string;
+}
+
 type team = {
   id: number;
   name: string;
+}
+
+export type preferences = {
+  team: string[],
+  sport: string[]
 }
 
 export type article = {

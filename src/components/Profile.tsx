@@ -2,20 +2,31 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import { fetchSports, patchPreferences } from "../utils/apiUtils";
-import { sport } from "../types";
+import { fetchSports, fetchTeams, patchPreferences } from "../utils/apiUtils";
+import { teams, sport } from "../types";
 
 export default function Profile() {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
   const [sports, setSports] = useState<sport[]>();
+  const [teams, setTeams] = useState<teams[]>();
   const cancelButtonRef = useRef(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [sportPreferences, setSportPreferences] = useState<string[]>([]);
+  const [teamsPreferences, setTeamPreferences] = useState<string[]>([]);
 
   const checkSportsList = (sport: string) => {
     for (let i = 0; i < sportPreferences.length; i++) {
       if (sportPreferences[i] === sport) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const checkTeamsList = (team: string) => {
+    for (let i = 0; i < teamsPreferences.length; i++) {
+      if (teamsPreferences[i] === team) {
         return true;
       }
     }
@@ -34,8 +45,28 @@ export default function Profile() {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      console.log("fetching teams list");
+      fetchTeams().then((res) => {
+        setTeams(res);
+        setLoading(false);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
   const renderButton = (sport: string) => {
     if (checkSportsList(sport)) {
+      return "Remove";
+    } else {
+      return "Follow";
+    }
+  };
+
+  const renderTeamButton = (team: string) => {
+    if (checkTeamsList(team)) {
       return "Remove";
     } else {
       return "Follow";
@@ -46,8 +77,12 @@ export default function Profile() {
     console.log(sportPreferences);
   }, [sportPreferences]);
 
+  useEffect(() => {
+    console.log(teamsPreferences);
+  }, [teamsPreferences]);
+
   const handlePatch = () => {
-    patchPreferences([], sportPreferences).then(() => {
+    patchPreferences(teamsPreferences, sportPreferences).then(() => {
       console.log("Successfully uploaded the data to the server");
     });
   };
@@ -105,9 +140,9 @@ export default function Profile() {
                           Let's personalize your dashboard.
                         </h1>
                         <h4 className="text-white font-bold text-xl mt-8 mb-1">
-                          Pick a sport.
+                          Pick a sport <span className="text-2xl">🏀</span>
                         </h4>
-                        <div className="pt-3">
+                        <div className="pt-3 mt-3 bg-[#0D1117] p-5 rounded-xl border-gray-800 border border-1">
                           {sports &&
                             sports.map((sport) => (
                               <div
@@ -132,16 +167,56 @@ export default function Profile() {
                                       ]);
                                     }
                                   }}
-                                  className="inline mt-3 bg-white border border-1 border-gray-700 text-black text-sm font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-gray"
+                                  className="inline mt-3 bg-black border border-1 border-gray-700 text-white text-sm font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-gray"
                                 >
                                   {renderButton(sport.name)}
                                 </button>
                               </div>
                             ))}
                         </div>
+                        <h4 className="text-white font-bold text-xl mt-8 mb-1">
+                          Pick a team <span className="text-3xl">🤼</span>
+                        </h4>
+                        <div className="pt-3 mt-3 bg-[#0D1117] p-5 rounded-xl border-gray-800 border border-1">
+                          {teams &&
+                            teams.map((team) => (
+                              <div
+                                key={team.id}
+                                className="justify-between items-center py-2 flex"
+                              >
+                                <div className="inline items-center">
+                                  <p className="text-gray-200 font-bold ">
+                                    {team.name}
+                                  </p>
+                                  <p className="text-gray-200 text-sm ">
+                                    {team.plays}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    if (checkTeamsList(team.name)) {
+                                      const filteredSports =
+                                        teamsPreferences.filter(
+                                          (item) => item !== team.name
+                                        );
+                                      setTeamPreferences(filteredSports);
+                                    } else {
+                                      setTeamPreferences((prev: string[]) => [
+                                        ...prev,
+                                        team.name,
+                                      ]);
+                                    }
+                                  }}
+                                  className="inline mt-3 bg-black border border-1 border-gray-700 text-white text-sm font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-gray"
+                                >
+                                  {renderTeamButton(team.name)}
+                                </button>
+                              </div>
+                            ))}
+                        </div>
                         <button
                           onClick={() => handlePatch()}
-                          className=" mt-10 bg-white border border-1 border-gray-700 text-black font-semibold py-2 px-10 rounded-md focus:outline-none focus:shadow-outline-gray"
+                          className="w-full mt-10 bg-white border border-1 border-gray-700 text-black font-semibold py-2 px-10 rounded-md focus:outline-none focus:shadow-outline-gray"
                         >
                           Save
                         </button>
