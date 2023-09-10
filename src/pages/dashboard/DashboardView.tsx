@@ -149,36 +149,28 @@ export default function DashboardView() {
       );
     }
     if (
-      preferences !== undefined &&
-      preferences.sport !== undefined &&
-      preferences.sport.length === 0
+      (preferences !== undefined &&
+        preferences.sport !== undefined &&
+        preferences.sport.length === 0 &&
+        localStorage.getItem("loggedIn") === "true") ||
+      preferences === undefined ||
+      (preferences !== undefined && preferences.sport === undefined)
     ) {
-      console.log("no preferences");
+      console.log("no preferences found");
       /* Displaying all articles in case preferences for sport are found missing. */
-      return articles?.map((item) => {
-        return (
-          <div key={item.id} className="hover:cursor-pointer">
-            <div
-              onClick={() => navigate(`/article/${item.id}`)}
-              className="w-full"
-            >
-              <div className="max-w-full rounded-2xl flex mx-2 my-4 overflow-hidden bg-black text-white shadow-lg  border border-gray-700">
-                <div className="">
-                  <img
-                    className="h-52 w-64 object-cover items-center"
-                    src={item.thumbnail}
-                    alt="Thumbnail"
-                  />
-                </div>
-                <div className="px-6 py-4 inline">
-                  <div className="font-bold text-xl mb-2">{item.title}</div>
-                  <p className="text-gray-400 text-base">{item.summary}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      });
+      return (
+        <div className="pb-10 items-center w-full text-center inline-block">
+          <p className="font-semibold ">
+            No Preference found. <span className="text-2xl">😅</span>
+          </p>
+          <span
+            onClick={() => navigate("/profile")}
+            className="hover:underline text-purple-400 hover:text-purple-500 hover:underline-offset-4 cursor-pointer"
+          >
+            Click here to create a preference.
+          </span>
+        </div>
+      );
     }
     if (articles) {
       console.log("Fetching relevant articles.");
