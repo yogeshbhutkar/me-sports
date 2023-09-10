@@ -3,8 +3,9 @@ import {
   fetchArticles,
   fetchMatchList,
   fetchPreferences,
+  fetchTeams,
 } from "../../utils/apiUtils";
-import { article, preferences } from "../../types";
+import { article, preferences, teams } from "../../types";
 import { Fragment } from "react";
 import { Tab } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ type matches = {
 
 export default function DashboardView() {
   const [articles, setArticles] = useState<article[]>();
+  const [teams, setTeams] = useState<teams[]>([]);
   const [sports, setSports] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [matches, setMatches] = useState<matches>();
@@ -27,7 +29,17 @@ export default function DashboardView() {
   const [animate, setAnimate] = useState(false);
   const [preferredMatches, setPreferredMatches] = useState<MatchList[]>();
   const [preferences, setPreferences] = useState<preferences>();
+  const [selectedSport, setSelectedSport] = useState<string>(sports[0]);
+  const [selectedTeam, setSelectedTeam] = useState<string>();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      fetchTeams().then((res) => setSelectedSport(res[0]));
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   const compareMatchPreferences = (match: MatchList) => {
     if (preferences !== undefined && preferences.team !== undefined) {
@@ -113,6 +125,21 @@ export default function DashboardView() {
     //Storing in alphabetical order.
     setSports((prev) => prev?.sort());
   }, [articles]);
+
+  useEffect(() => {
+    try {
+      fetchTeams().then((res) => {
+        setTeams(res);
+        if (selectedSport !== "Sport" && selectedSport !== undefined) {
+          setTeams((prev) =>
+            prev.filter((item) => item.plays === selectedSport)
+          );
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [selectedSport]);
 
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -245,6 +272,70 @@ export default function DashboardView() {
           </Suspense>
         </ErrorBoundary>
       )}
+      <div>
+        <div className="pt-5 pl-5 bg-black p-5 mt-5 rounded-xl border border-1 border-gray-800">
+          <div className="justify-end flex">
+            <h2 className="font-bold float-left flex-1 underline underline-offset-8 text-2xl pt-5 pb-3 pr-2 inline">
+              Favourites
+            </h2>
+            <select
+              required
+              onChange={(e) => setSelectedSport(e.target.value)}
+              name="sports"
+              id="sports"
+              className="text-white mr-5 bg-black outline-none border border-1 border-gray-700 px-1 py-2 rounded-md"
+            >
+              <option>Sport</option>
+              {sports.map((temp, idx) => (
+                <option key={idx}>{temp}</option>
+              ))}
+            </select>
+            <select
+              required
+              onChange={(e) => setSelectedTeam(e.target.value)}
+              name="teams"
+              id="teams"
+              className="text-white bg-black outline-none border border-1 border-gray-700 px-1 py-2 rounded-md"
+            >
+              <option>Team</option>
+              {teams.map((temp, idx) => (
+                <option key={idx}>{temp.name}</option>
+              ))}
+            </select>
+          </div>
+          {articles &&
+            articles.map((ele) => {
+              if (
+                selectedSport !== undefined &&
+                selectedSport !== "Sport" &&
+                selectedTeam !== undefined &&
+                selectedTeam !== "Team" &&
+                ele.teams[0] !== undefined &&
+                ele.teams[1] !== undefined
+              )
+                if (
+                  selectedSport === ele.sport.name ||
+                  selectedTeam === ele.teams[0].name ||
+                  selectedTeam === ele.teams[1].name
+                )
+                  return (
+                    <div
+                      key={ele.id}
+                      onClick={() => navigate(`/article/${ele.id}`)}
+                      className="bg-black cursor-pointer  border border-1 border-gray-700 rounded-md px-2 py-2 my-4"
+                    >
+                      <p className="pr-2 float-right text-gray-300 font-semibold">
+                        {ele.sport.name}
+                      </p>
+                      <p className="pl-2">{ele.title}</p>
+                      <p className="pl-2 text-sm text-gray-300 font-semibold">
+                        {ele.teams[0].name} vs {ele.teams[1].name}
+                      </p>
+                    </div>
+                  );
+            })}
+        </div>
+      </div>
       <h2 className="font-bold text-2xl pt-5 pb-3">
         Trending News <span className="text-2xl">🪄</span>
       </h2>
