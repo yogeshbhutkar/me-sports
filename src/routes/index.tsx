@@ -13,6 +13,7 @@ import Logout from "../pages/logout";
 import Signup from "../pages/signup";
 import Profile from "../components/Profile";
 import UpdatePassword from "../components/UpdatePassword";
+import NotFound from "../components/NotFound";
 
 const router = createBrowserRouter(
   createRoutesFromElements([
@@ -58,6 +59,7 @@ const router = createBrowserRouter(
       }
     />,
     <Route path="/logout" element={<Logout />} />,
+    <Route path="*" element={<NotFound />} />,
   ])
 );
 
