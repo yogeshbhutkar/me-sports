@@ -5,6 +5,8 @@ An online web-app which lets you stay updated on the sports news, can be used by
 
 The web-app is deployed at : https://mesports.vercel.app/
 
+The video demonstration can be found at : https://www.loom.com/share/Capstone-Submission-for-WD301-Project-4ba60f6ec612425993ab175253ad58f3?sid=bb5a4f5a-1f98-43cf-9836-12e09a68eef2
+
 
 ## Installation
 
