@@ -1,27 +1,46 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Me-sports
 
-Currently, two official plugins are available:
+An online web-app which lets you stay updated on the sports news, can be used by both casual and professional user, and also gives preference based news and sports feed.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The web-app is deployed at : https://mesports.vercel.app/
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Installation
 
-- Configure the top-level `parserOptions` property like this:
+Pre-requisites: Node JS
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+  # Install the node modules.
+
+  cd me-sports
+  npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+```bash
+    # Spin up the server.
+    npm run dev
+```
+
+    
+## Features
+
+- News Update through various articles.
+- Articles can be sorted by categories.
+- Update to scoreboard of multiple scores in real time.
+- Manual refresh button to refresh the scores.
+- Storing user's preferences and providing relevant feed.
+- A Clean and Simple UI, use two-finger gesture or shift+scroll-wheel to scroll through the scorecards.
+- A secore token based user authentication.
+- Jotai for state management.
+
+
+## Screenshots
+
+[![Home Page](https://i.postimg.cc/0NDkC3sp/ss1.png)](https://postimg.cc/Y42Brdj9)
+
+[![Favourite Page](https://i.postimg.cc/J7bTWQ1P/ss2.png)](https://postimg.cc/rzwG1xRr)
+
+[![News Section](https://i.postimg.cc/wjhxXZHD/ss3.png)](https://postimg.cc/SnxpqZnK)
+
+[![Personalize your Dashboard](https://i.postimg.cc/T3mjrdpQ/ss4.png)](https://postimg.cc/ZWbymhPy)
